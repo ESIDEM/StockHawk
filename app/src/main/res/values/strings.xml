@@ -26,7 +26,7 @@
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_add">Add</string>
     <string name="symbol">Symbol</string>
-
+    <string name="widget_title">StockHawk</string>
     <string name="stock_name">Stock name</string>
     <string name="stock_chart">Stock chart</string>
     <string name="stock_current_price">Stock current price</string>
