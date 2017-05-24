@@ -74,45 +74,52 @@ public final class QuoteSyncJob {
 
 
                 Stock stock = quotes.get(symbol);
-                StockQuote quote = stock.getQuote();
 
-                float price = quote.getPrice().floatValue();
-                float change = quote.getChange().floatValue();
-                float percentChange = quote.getChangeInPercent().floatValue();
+                if (stock == null || !stock.isValid()) {
+                    PrefUtils.removeStock(context, symbol);
+                } else {
+                    StockQuote quote = stock.getQuote();
 
-                // WARNING! Don't request historical data for a stock that doesn't exist!
-                // The request will hang forever X_x
-               // List<HistoricalQuote> history = stock.getHistory(from, to, Interval.WEEKLY);
 
-                // Note for reviewer:
-                // Due to the problems with Yahoo API we have commented the line above
-                // and included this one to fetch the history from the MockUtils
-                //This should be enough as to develop and review while the API is down
 
-                List<HistoricalQuote> history = MockUtils.getHistory();
+                        float price = quote.getPrice().floatValue();
+                        float change = quote.getChange().floatValue();
+                        float percentChange = quote.getChangeInPercent().floatValue();
 
-                StringBuilder historyBuilder = new StringBuilder();
 
-                for (HistoricalQuote it : history) {
-                    historyBuilder.append(it.getDate().getTimeInMillis());
-                    historyBuilder.append(", ");
-                    historyBuilder.append(it.getClose());
-                    historyBuilder.append("\n");
+                        // WARNING! Don't request historical data for a stock that doesn't exist!
+                        // The request will hang forever X_x
+                        // List<HistoricalQuote> history = stock.getHistory(from, to, Interval.WEEKLY);
+
+                        // Note for reviewer:
+                        // Due to the problems with Yahoo API we have commented the line above
+                        // and included this one to fetch the history from the MockUtils
+                        //This should be enough as to develop and review while the API is down
+
+                        List<HistoricalQuote> history = MockUtils.getHistory();
+
+                        StringBuilder historyBuilder = new StringBuilder();
+
+                        for (HistoricalQuote it : history) {
+                            historyBuilder.append(it.getDate().getTimeInMillis());
+                            historyBuilder.append(", ");
+                            historyBuilder.append(it.getClose());
+                            historyBuilder.append("\n");
+                        }
+
+                        ContentValues quoteCV = new ContentValues();
+                        quoteCV.put(Contract.Quote.COLUMN_SYMBOL, symbol);
+                        quoteCV.put(Contract.Quote.COLUMN_PRICE, price);
+                        quoteCV.put(Contract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
+                        quoteCV.put(Contract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
+
+
+                        quoteCV.put(Contract.Quote.COLUMN_HISTORY, historyBuilder.toString());
+
+                        quoteCVs.add(quoteCV);
+
+                    }
                 }
-
-                ContentValues quoteCV = new ContentValues();
-                quoteCV.put(Contract.Quote.COLUMN_SYMBOL, symbol);
-                quoteCV.put(Contract.Quote.COLUMN_PRICE, price);
-                quoteCV.put(Contract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
-                quoteCV.put(Contract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
-
-
-                quoteCV.put(Contract.Quote.COLUMN_HISTORY, historyBuilder.toString());
-
-                quoteCVs.add(quoteCV);
-
-            }
-
             context.getContentResolver()
                     .bulkInsert(
                             Contract.Quote.URI,
@@ -121,8 +128,10 @@ public final class QuoteSyncJob {
             Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
             context.sendBroadcast(dataUpdatedIntent);
 
-        } catch (IOException exception) {
+        } catch (NullPointerException exception) {
             Timber.e(exception, "Error fetching stock quotes");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

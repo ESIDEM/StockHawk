@@ -25,11 +25,24 @@
     <string name="dialog_hint">Symbol (e.g. GOOG)</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_add">Add</string>
+    <string name="symbol">Symbol</string>
+
+    <string name="stock_name">Stock name</string>
+    <string name="stock_chart">Stock chart</string>
+    <string name="stock_current_price">Stock current price</string>
+    <string name="stock_absolute_change">Stock absolute change</string>
+    <string name="stock_percentage">Stock percentage change</string>
+    <string name="currency_label" translatable="false">USD</string>
+    <string name="current_price">Current Price</string>
+
 
     <string name="error_no_network">No network connectivity! Will load stock cursor when the network is available.</string>
     <string name="error_no_stocks">No stocks added! Hit the floating action button to add one.</string>
 
     <string name="toast_stock_added_no_connectivity">Symbol %s added. Will refresh when network available.</string>
     <string name="toast_no_connectivity">Will refresh when network available.</string>
+    <string name="google_symbol">GOOG</string>
+    <string name="price_text">1000.00</string>
+    <string name="percentage_price">100%</string>
 
 </resources>
