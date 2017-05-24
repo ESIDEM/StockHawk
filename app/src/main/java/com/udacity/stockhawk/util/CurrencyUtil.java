@@ -8,7 +8,9 @@ import java.util.Locale;
  * Created by ESIDEM jnr on 5/24/2017.
  */
 
-public class CurrencyUtil {
+public final class CurrencyUtil {
+
+    private CurrencyUtil(){}
 
     public static final DecimalFormat dollarFormatWithPlus;
     public static final DecimalFormat dollarFormat;
